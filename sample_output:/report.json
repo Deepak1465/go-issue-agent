@@ -1,0 +1,34 @@
+{
+  "issue": {
+    "number": 1259,
+    "title": "Cron validator is not correct",
+    "url": "https://github.com/go-playground/validator/issues/1259",
+    "repo_url": "https://github.com/go-playground/validator",
+    "owner": "go-playground",
+    "repo": "validator",
+    "body": "Cron validator seems not correct. It throws error on input \"0 */1 * * *\" or \"0 */2 * * *\"\n\nPackage version: v10.14.0"
+  },
+  "pr": {
+    "title": "fix: cron validation support for star step value",
+    "body": "Fixes the cronRegexString in regexes.go to support */N step syntax in all cron fields. Added 10 test cases covering the missing patterns. Resolves #1259."
+  },
+  "diff_summary": {
+    "files_changed": ["regexes.go", "baked_in_test.go"],
+    "lines_added": 11,
+    "lines_removed": 1
+  },
+  "turns_used": 11,
+  "actions": [
+    "Called list_files: {\"path\": \".\"}",
+    "Called read_file: {\"path\": \"regexes.go\"}",
+    "Called search_code: {\"query\": \"isCron\"}",
+    "Called read_file: {\"path\": \"baked_in.go\"}",
+    "Called search_code: {\"query\": \"cronRegexString\"}",
+    "Called read_file: {\"path\": \"baked_in_test.go\"}",
+    "Called edit_file: {\"path\": \"regexes.go\", \"old_str\": \"cronRegexString = ...\"}",
+    "Called edit_file: {\"path\": \"baked_in_test.go\", \"old_str\": \"...\", \"new_str\": \"...\"}",
+    "Called run_tests: {\"args\": \"-run TestIsCron ./...\"}",
+    "Called run_tests: {\"args\": \"./...\"}",
+    "Called submit_pr: {\"title\": \"fix: cron validation support for star step value\"}"
+  ]
+}
