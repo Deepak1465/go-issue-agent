@@ -1,0 +1,53 @@
+diff --git a/baked_in.go b/baked_in.go
+index 679729a..4ddca3f 100644
+--- a/baked_in.go
++++ b/baked_in.go
+@@ -2890,7 +2890,34 @@ func isHostnameRFC952(fl FieldLevel) bool {
+ }
+ 
+ func isHostnameRFC1123(fl FieldLevel) bool {
+-	return hostnameRegexRFC1123().MatchString(fl.Field().String())
++	val := fl.Field().String()
++	if hasOutOfRangeIPv4Octets(val) {
++		return false
++	}
++	return hostnameRegexRFC1123().MatchString(val)
++}
++
++// hasOutOfRangeIPv4Octets reports dotted-decimal strings with an octet outside 0-255.
++func hasOutOfRangeIPv4Octets(s string) bool {
++	parts := strings.Split(s, ".")
++	if len(parts) != 4 {
++		return false
++	}
++	for _, part := range parts {
++		if part == "" || len(part) > 3 {
++			return false
++		}
++		for i := 0; i < len(part); i++ {
++			if part[i] < '0' || part[i] > '9' {
++				return false
++			}
++		}
++		n, err := strconv.Atoi(part)
++		if err != nil || n > 255 {
++			return true
++		}
++	}
++	return false
+ }
+ 
+ func isFQDN(fl FieldLevel) bool {
+diff --git a/validator_test.go b/validator_test.go
+index 67d3f83..a1b2c3d 100644
+--- a/validator_test.go
++++ b/validator_test.go
+@@ -11001,6 +11001,8 @@ func TestHostnameRFC1123Validation(t *testing.T) {
+ 		{"example.", false},
+ 		{"test_example", false},
+ 		{"192.168.0.1", true},
++		{"277.168.0.1", false},
++		{"999.999.999.999", false},
+ 		{"email@example.com", false},
+ 		{"2001:cdba:0000:0000:0000:0000:3257:9652", false},
+ 		{"2001:cdba:0:0:0:0:3257:9652", false},

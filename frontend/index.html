@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Go Issue Agent — Agentic AI for Open Source</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="/static/css/style.css" />
+</head>
+<body>
+  <div class="bg-grid"></div>
+
+  <header class="header">
+    <div class="container header-inner">
+      <div class="brand">
+        <span class="brand-icon">{ }</span>
+        <div>
+          <h1>Go Issue Agent</h1>
+          <p>Agentic AI contributor for open-source Go projects</p>
+        </div>
+      </div>
+      <div class="status-pills" id="statusPills">
+        <span class="pill" id="pillGemini">Gemini …</span>
+        <span class="pill" id="pillGo">Go …</span>
+      </div>
+    </div>
+  </header>
+
+  <main class="container">
+    <!-- Hero / Use case -->
+    <section class="hero card">
+      <div class="hero-content">
+        <span class="badge">Take-Home Assignment Demo</span>
+        <h2>From GitHub issue → tested code fix → PR summary</h2>
+        <p>
+          This agent inspects <strong>go-playground/validator</strong>, understands the issue,
+          searches the codebase, applies a minimal fix, runs <code>go test</code>, and generates
+          a pull request title and body — using a <strong>tool-calling loop</strong>, not a one-shot prompt.
+        </p>
+        <div class="flow">
+          <div class="flow-step"><span>1</span> Fetch issue</div>
+          <div class="flow-arrow">→</div>
+          <div class="flow-step"><span>2</span> Clone & explore</div>
+          <div class="flow-arrow">→</div>
+          <div class="flow-step"><span>3</span> Plan & edit</div>
+          <div class="flow-arrow">→</div>
+          <div class="flow-step"><span>4</span> Run tests</div>
+          <div class="flow-arrow">→</div>
+          <div class="flow-step"><span>5</span> PR summary</div>
+        </div>
+      </div>
+    </section>
+
+    <div class="layout">
+      <!-- Left: Input + Progress -->
+      <section class="panel card">
+        <h3>Run the agent</h3>
+        <form id="runForm">
+          <label for="issueUrl">GitHub issue URL</label>
+          <input
+            type="url"
+            id="issueUrl"
+            placeholder="https://github.com/go-playground/validator/issues/1561"
+            required
+          />
+          <div class="quick-picks">
+            <span>Try:</span>
+            <button type="button" class="chip" data-url="https://github.com/go-playground/validator/issues/1561">#1561 hostname</button>
+            <button type="button" class="chip" data-url="https://github.com/go-playground/validator/issues/1529">#1529 cron</button>
+          </div>
+          <div class="actions">
+            <button type="submit" class="btn btn-primary" id="runBtn">
+              <span class="btn-label">Run Agent</span>
+            </button>
+            <button type="button" class="btn btn-secondary" id="demoBtn">View sample output</button>
+          </div>
+        </form>
+
+        <div class="progress-section" id="progressSection" hidden>
+          <div class="progress-header">
+            <h4>Live progress</h4>
+            <span class="job-id" id="jobId"></span>
+          </div>
+          <div class="progress-bar"><div class="progress-fill" id="progressFill"></div></div>
+          <p class="progress-msg" id="progressMsg">Starting…</p>
+          <ul class="event-log" id="eventLog"></ul>
+        </div>
+      </section>
+
+      <!-- Right: Results -->
+      <section class="panel card results-panel" id="resultsPanel" hidden>
+        <div class="results-header">
+          <div>
+            <h3 id="resultTitle">Results</h3>
+            <p class="result-meta" id="resultMeta"></p>
+          </div>
+          <span class="badge badge-success" id="prBadge" hidden>PR Ready</span>
+        </div>
+
+        <div class="tabs">
+          <button class="tab active" data-tab="summary">PR Summary</button>
+          <button class="tab" data-tab="diff">Diff</button>
+          <button class="tab" data-tab="actions">Action Log</button>
+        </div>
+
+        <div class="tab-content active" id="tab-summary">
+          <article class="markdown-body" id="prSummary"></article>
+        </div>
+        <div class="tab-content" id="tab-diff">
+          <pre><code id="diffCode"></code></pre>
+        </div>
+        <div class="tab-content" id="tab-actions">
+          <ul class="action-list" id="actionList"></ul>
+        </div>
+      </section>
+    </div>
+
+    <!-- Tools showcase -->
+    <section class="tools card">
+      <h3>Agent tools</h3>
+      <div class="tool-grid">
+        <div class="tool-card"><code>list_files</code><p>Explore repo structure</p></div>
+        <div class="tool-card"><code>search_code</code><p>Grep Go source files</p></div>
+        <div class="tool-card"><code>read_file</code><p>Read before editing</p></div>
+        <div class="tool-card"><code>edit_file</code><p>Exact string-replace patch</p></div>
+        <div class="tool-card"><code>run_go</code><p>go test / go vet</p></div>
+        <div class="tool-card"><code>submit_pr</code><p>PR title + body (test-gated)</p></div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="footer">
+    <div class="container">
+      <p>Built with Gemini 2.5 Flash · Tool-calling agent · <a href="https://github.com/go-playground/validator" target="_blank">go-playground/validator</a></p>
+    </div>
+  </footer>
+
+  <script src="/static/js/app.js"></script>
+</body>
+</html>

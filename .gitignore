@@ -1,5 +1,9 @@
 .DS_Store
 __pycache__/
 *.pyc
-sample_output/
+.venv/
+.env
+output/
+output-live/
+runs/
 tmp/

@@ -1,0 +1,35 @@
+{
+  "issue": {
+    "number": 1561,
+    "title": "[Bug]: hostname_rfc1123 validation does not enforce IPv4 octet check",
+    "body": "According to rfc1123: a valid host name can never have the dotted-decimal form #.#.#.#... However, 277.168.0.1 is returned as a valid host.",
+    "url": "https://github.com/go-playground/validator/issues/1561",
+    "owner": "go-playground",
+    "repo": "validator",
+    "repo_url": "https://github.com/go-playground/validator"
+  },
+  "pr": {
+    "title": "fix: reject hostname_rfc1123 values with out-of-range IPv4 octets",
+    "body": "## Problem\n\nThe `hostname_rfc1123` validator accepts strings like `277.168.0.1` that look like IPv4 addresses but contain octets outside 0–255. Per RFC 1123, such dotted-decimal forms should not be valid hostnames.\n\n## Root cause\n\n`isHostnameRFC1123` only checked the RFC 1123 hostname regex, which allows digit-only labels and therefore accepts invalid dotted-quad strings.\n\n## Fix\n\n- Add `hasOutOfRangeIPv4Octets` helper in `baked_in.go`\n- Reject hostname candidates with any octet > 255 before regex matching\n- Add regression tests in `TestHostnameRFC1123Validation`\n\n## Validation\n\n```\ngo test -run TestHostnameRFC1123 ./...\n```\n\nResolves #1561."
+  },
+  "branch": "agent/fix-issue-1561",
+  "turns_used": 14,
+  "actions": [
+    {"tool": "list_files", "args": {"path": "."}, "result_preview": "FILE baked_in.go\nFILE regexes.go\nFILE validator_test.go\n...", "error": false},
+    {"tool": "search_code", "args": {"query": "hostname_rfc1123"}, "result_preview": "baked_in.go:218:\t\t\"hostname_rfc1123\":", "error": false},
+    {"tool": "search_code", "args": {"query": "isHostnameRFC1123"}, "result_preview": "baked_in.go:2892:func isHostnameRFC1123", "error": false},
+    {"tool": "read_file", "args": {"path": "baked_in.go"}, "result_preview": "package validator\n...", "error": false},
+    {"tool": "read_file", "args": {"path": "regexes.go"}, "result_preview": "var (\n\thostnameRegexStringRFC1123", "error": false},
+    {"tool": "read_file", "args": {"path": "validator_test.go"}, "result_preview": "func TestHostnameRFC1123Validation", "error": false},
+    {"tool": "edit_file", "args": {"path": "baked_in.go", "old_str_chars": 89, "new_str_chars": 612}, "result_preview": "SUCCESS: Edited baked_in.go (1 edit(s) total)", "error": false},
+    {"tool": "edit_file", "args": {"path": "validator_test.go", "old_str_chars": 28, "new_str_chars": 98}, "result_preview": "SUCCESS: Edited validator_test.go (2 edit(s) total)", "error": false},
+    {"tool": "run_go", "args": {"args": "test -run TestHostnameRFC1123 ./..."}, "result_preview": "[go test -run TestHostnameRFC1123 ./... — PASSED]", "error": false},
+    {"tool": "run_go", "args": {"args": "vet ./..."}, "result_preview": "[go vet ./... — PASSED]", "error": false},
+    {"tool": "submit_pr", "args": {"title": "fix: reject hostname_rfc1123 values with out-of-range IPv4 octets", "body": "..."}, "result_preview": "PR summary accepted.", "error": false}
+  ],
+  "diff_summary": {
+    "files_changed": ["baked_in.go", "validator_test.go"],
+    "lines_added": 31,
+    "lines_removed": 1
+  }
+}
